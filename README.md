@@ -3,4 +3,4 @@
 
 ## inspiration：
 
-I choose audio to drive your individual code -- bgm is **《wave》** from deca joins.
+I choose audio to drive my individual code -- bgm is **《wave》** from deca joins.
