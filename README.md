@@ -1,108 +1,86 @@
-# Dynamic Audio-Responsive Visual Art with p5.js
-produced by Yiez
+# Audio-Responsive Visual Art with p5.js
+
 
 ## Project Overview
 
->This project generates dynamic, audio-responsive visual art using the p5.js library. The program analyzes audio frequencies and adapts animations in response to specific sound frequencies. Different shapes and colors in the sky and sea regions react to audio cues, creating an interactive visual experience.
+>This project visualizes audio input through dynamic and interactive animations. The visual elements change size, color, and movement based on audio frequency data, making it ideal for music visualization or interactive installations. With added adaptive features, the project adjusts to different screen sizes and incorporates stereo sound control based on user interaction, enhancing the immersive experience.
 
 
+## Instructions
 
-## Contents
-
-#### [Instructions](#instrations)
-
-#### [Details of approach](#details-of-approach)
-
-#### [References](#references)
-
-#### [Technical Explanation](#technical-explanation)
-
-
-## i.Instructions
-
-### Interaction:
+### 1.Interaction:
 
 - Click on the canvas to start or stop audio playback.
-
 - Shapes and colors will respond based on audio frequency data.
-
 - Move the mouse left and right on the screen to change the position of the sound channel while the music is playing.
-
 - Resize the browser window to see the canvas adjust automatically.
 
-### Code Structure：
+## Details of approach
+>This project mainly uses audio to change the dynamics in the image.
 
-The project is structured as follows:
-- preload(): Loads images and audio files.
-- setup(): Sets up the canvas, initializes p5.FFT, and calls rectInit() to create rectangles based on image data.
-- rectInit(): Creates rectangles from image pixels and stores them in arrays for each section.
-- draw(): Calls specific drawing functions for each section (e.g., drawSky(), drawSea()).
-- Rect Class: Manages rectangle properties, including move() for audio-driven motion and drawRect() for rendering.
-
-## ii.Details of approach
-
-1.Audio Frequency Analysis with p5.FFT
-
-- Uses fft.analyze() to get real-time frequency data.
-
-- High and low frequencies control different parts of the animation.
-
-- Example: High frequencies impact sky shapes; low frequencies affect sea movement.
-
-2.Smooth Animation with Perlin Noise
-
-- Perlin noise offsets (noiseOffsetX and noiseOffsetY) ensure natural, smooth motion.
-
-- Used to adjust the position and rotation of shapes, especially for fluid sea and sky effects.
-
-3.Dynamic Alpha and Color Adjustments
-
-- Alpha transparency and color are adjusted based on position and audio data.
-
-- Adds depth and variation, especially in the sea section where transparency varies with the rectangle’s vertical position.
-
-4.Unique Shape Transformations
-
-- In high-frequency ranges, sky rectangles become irregular polygons.
-
-- The drawRect() function conditions these changes based on audio playback and frequency presence, enhancing visual diversity.
-
-### 2.Technologies Used
-
->This project uses the following technologies and libraries:
-
-1. __p5.js__: Core library for graphics and interaction.
-
-2. __p5.sound.js__: Provides p5.FFT for audio frequency analysis.
-
-3. __Perlin Noise__: Generates smooth, natural variations in animation.
-
-### 3.Features
-
-- __Audio Interaction__: Shapes dynamically respond to audio frequency data, creating visually appealing changes based on sound.
-
-- __Perlin Noise Animation__: Smooth, natural motion effects are generated using Perlin noise, making the shapes flow more organically.
-
-- __Window Resizing Adaptability__: The canvas resizes automatically to match the browser window size.
-
-- __Dynamic Transparency and Color__: The sky and sea colors vary based on position and audio frequency, adding depth and richness.
-
-- __Unique Shape Generation__: The sky shapes shift to irregular polygons in response to high-frequency sounds, adding unexpected visual elements.
-
-## iii.References
-
-1.[p5.js Documentation]()
-
-2.[p5.sound.js Documentation]()
-
-3.[Perlin Noise]()
+Compared to my team members use of time changes to change colours; the generation of 3D stereoscopic particles that allow the user to control the viewpoint as they move through it; and the dynamic effects done with perlin noise, This project generates dynamic visual art that responds to audio input in real-time using p5.js. Visual elements, including shapes, colors, and transparency, dynamically react to audio frequencies, creating an immersive and interactive experience.
 
 
+My individual approach to animating the group code focused on expanding interactivity, creating dynamic visuals in response to audio input, and enhancing adaptability. Below are the main elements of my approach:
 
-## iv.Technical Explanation
+1. Audio Integration with Dynamic Visuals
 
-1.	p5.js Library:
-- p5.js was used for creating the canvas, managing shapes, and adding interactivity.
-- p5.sound.js was utilized specifically for p5.FFT to perform audio analysis.
-2.	Perlin Noise for Smooth Animations:
-- Perlin Noise Theory was applied to achieve realistic, smooth variations in movement, especially for simulating natural flow in the sea and sky sections.
+• Approach: I integrated an audio file and used the p5.js p5.FFT library to analyze the audio frequency data in real-time.
+• Details: The audio’s frequency spectrum is broken down into low, mid, and high frequencies. These are mapped to various aspects of the visual elements, such as movement, color, and transparency. This allows specific frequency ranges to control different parts of the visual, making the animation highly responsive to sound.
+• Purpose: This approach made the animation feel alive and synchronized with the audio, enhancing the immersive experience.
+
+2. Adaptive Canvas and Window Resize Handling
+
+• Approach: I modified the canvas dimensions to be responsive and set maximum size constraints.
+• Details: I used windowResized() to detect when the browser window size changes, dynamically resizing the canvas while retaining proportional visual elements. This resizing feature ensured that the animation adapts seamlessly across different screen sizes.
+• Purpose: It makes the animation adaptable to any screen, ensuring a consistent experience regardless of device or browser window size.
+
+3. Enhanced Interaction Through Mouse Controls
+
+• Approach: I implemented stereo sound control based on mouse position.
+• Details: By mapping the horizontal mouse position to audio.pan(), I allowed users to control the stereo balance, creating an additional layer of interaction.
+• Purpose: This adds depth to the user experience by allowing them to directly influence the sound environment of the animation, making it feel more personal and immersive.
+
+4. Perlin Noise for Smooth, Organic Motion
+
+• Approach: I used Perlin noise to generate smooth, continuous movement for various visual elements.
+• Details: Perlin noise offsets for x and y coordinates created fluid, natural-looking motions for the sky and sea parts of the animation. It helped avoid the harshness of purely random movement, simulating organic flow and drift.
+• Purpose: This approach provided a more lifelike, atmospheric quality to the visuals, complementing the audio-responsive effects.
+
+5. Dynamic Color and Transparency Adjustments
+
+• Approach: I mapped audio frequency data to color and transparency for different visual components.
+• Details: Using map() to link audio frequencies to color and alpha values, I added dynamic changes in RGB and transparency levels, particularly in the sky and sea components. Higher frequencies introduced vibrant colors and reduced transparency, while lower frequencies produced subtler shades.
+• Purpose: This allowed the visuals to shift in tone and depth based on the music, resulting in a visually engaging, rhythmically synchronized display.
+
+6. Conditional Irregular Polygon Shapes for the Sky
+
+• Approach: I created irregular polygons for sky components based on audio frequencies.
+• Details: By mapping high-frequency data to an isSkyRandom condition, I selectively triggered the drawing of irregular polygons in the sky portion when high frequencies were detected.
+• Purpose: This method introduced variation in shape based on audio input, creating a more dynamic and visually surprising animation for the sky.
+
+These approaches transformed the group code into a highly interactive, audio-synchronized animation, with smooth motion, adaptive visuals, and immersive sound control, making it an engaging, multi-sensory experience.
+
+
+### 2.Features
+
+- Real-Time Audio Interaction: Visual elements respond to real-time audio frequency data.
+- Adaptive Canvas Size: The canvas adjusts to fit screen size, ensuring consistent visuals across devices.
+- Stereo Channel Control: Mouse movement adjusts audio panning for an immersive experience.
+- Dynamic Transparency and Color: Shapes vary in color and transparency based on audio data, creating depth.
+- Unique Shape Transformations: Irregular polygons are used to represent sky elements, adding a unique visual style.
+
+## References
+
+1. __Constructor__: The constructor of the Rect class initialises the x, y, colour values, transparency and noise offset of the rectangle, ensuring that each object is created with separate properties.
+- [JavaScript Constructor Documentation - MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/constructor)
+
+2. __beginShape() and endShape()__: Generate irregular polygons with beginShape() and endShape(CLOSE) in the drawRect() method of the Rect class to make the shape of the sky part more random and expressive.
+- [beginShape() - p5.js](https://p5js.org/reference/p5/beginShape/), [endShape() - p5.js](https://p5js.org/reference/p5/endShape/)
+
+3. __vertex()__: works with beginShape() and endShape() to draw the irregular outline of a polygon by specifying the position of each vertex.
+- [vertex() - p5.js](https://p5js.org/reference/p5/vertex/)
+
+## Technical Explanation
+### AI Statement of Use
+In completing this assignment, I used ChatGPT to assist me with code layout optimisation. At the same time, I used DeepL translation software to translate and output some of the elaborated content in order to ensure the accuracy of the language expression. In all cases, AI tools were only used to assist with formatting and translation, and the core content and code was done independently by me.
