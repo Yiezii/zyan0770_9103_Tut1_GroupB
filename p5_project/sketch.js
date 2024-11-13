@@ -1,13 +1,15 @@
 let audio, fft;
 let sky, sea, reflection, main;
 let size = 10; // Default size for other parts
-let sizeSky = 28; // Size of rectangle for the sky part
-let sizeSea = 30; // Size of rectangle for the sea part
+let sizeSky = 50; // Size of rectangle for the sky part
+let sizeSea = 50; // Size of rectangle for the sea part
 let skyRects = []; // Store rectangles for the sky part
 let seaRects = []; // Store rectangles for the sea part
 let mainRects = []; // Store rectangles for the main part
 let reflectionRects = []; // Store rectangles for the reflection part
 let isAudioPlaying = false;
+let isHaveHighFreq = false;
+let isSkyRandom = false;
 
 function preload() {
     // Preload images
@@ -44,7 +46,7 @@ function toggleAudio() {
         audio.stop(); // Stop the audio if it's playing
         isAudioPlaying = false;
     } else {
-        audio.loop();  // Start audio if it's not playing yet
+        audio.play();  // Start audio if it's not playing yet
         isAudioPlaying = true;
     }
 }
@@ -173,45 +175,63 @@ class Rect {
 
         if (isAudioPlaying) {
             if (this.part === "sky") {
-                let highFreq = spectrum[30]; // Use a specific frequency range for sky
+                let highFreq = spectrum[40]; // Use a specific frequency range for sky
 
-                let speedX = map(highFreq, 0, 255, 0.001, 0.02);
-                this.noiseOffsetX += speedX;
-                this.offsetX = map(noise(this.noiseOffsetX), 0, 1, -400, 400);
+                if (highFreq != null) {
+                    isHaveHighFreq = true;
+                    // Adjust noise offsets for flowing effect based on high frequency
+                    let speedX = map(highFreq, 0, 225, 0, 5);
+                    this.noiseOffsetX += speedX;
+                    this.offsetX = map(noise(this.noiseOffsetX), 0, 1, -400, 400);
 
-                // Color modulation based on spectrum (sky color)
-                this.colorR = map(spectrum[5], 0, 255, 0, 255);
-                this.colorG = map(spectrum[10], 0, 255, 0, 255);
-                this.colorB = map(spectrum[15], 0, 255, 100, 255);
+                    // Color modulation based on spectrum (sky color)
+                    this.colorR = map(spectrum[5], 0, 255, 0, 255);
+                    this.colorG = map(spectrum[10], 0, 255, 0, 255);
+                    this.colorB = map(spectrum[15], 0, 255, 100, 255);
 
-                // Smooth alpha for the sky
-                let smoothAlpha = map(noise(this.noiseOffsetX * 0.5), 0, 1, 120, 255);
-                this.color = color(this.colorR, this.colorG, this.colorB, smoothAlpha);
+                    // Smooth alpha for the sky
+                    let smoothAlpha = map(noise(this.noiseOffsetX * 0.5), 0, 1, 120, 255);
+                    this.color = color(this.colorR, this.colorG, this.colorB, smoothAlpha);
+
+                    if (speedX != 0) {
+                        isSkyRandom = true;
+                    } else {
+                        isSkyRandom = false;
+                    }
+                } else {
+                    isHaveHighFreq = false;
+                }
             }
 
             if (this.part === "sea") {
                 let lowFreq = spectrum[10]; // Use a lower frequency band for sea
 
-                // Adjust noise offsets for flowing effect based on low frequency
-                this.noiseOffsetY += map(lowFreq, 0, 255, 0.1, 2);  // Also vary vertical movement speed
+                if (lowFreq != null) {
+                    // Adjust noise offsets for flowing effect based on low frequency
+                    this.noiseOffsetY += map(lowFreq, 0, 255, 0, 0.5);  // Also vary vertical movement speed
 
-                // Apply Perlin noise to create smooth flowing motion
-                this.offsetY = map(noise(this.noiseOffsetY), 0, 1, -30, 30);  // Vertical offset for wave-like motion
+                    // Apply Perlin noise to create smooth flowing motion
+                    this.offsetY = map(noise(this.noiseOffsetY), 0, 1, -30, 30);  // Vertical offset for wave-like motion
 
-                // Color modulation based on spectrum (sea color)
-                this.colorR = map(spectrum[5], 0, 255, 0, 50);  // Darker greenish-blue for depth
-                this.colorG = map(spectrum[10], 0, 255, 100, 255);  // Brighter greenish tone
-                this.colorB = map(spectrum[15], 0, 255, 150, 255);  // Deeper blue
+                    // Color modulation based on spectrum (sea color)
+                    this.colorR = map(spectrum[5], 0, 255, 0, 50);  // Darker greenish-blue for depth
+                    this.colorG = map(spectrum[10], 0, 255, 100, 255);  // Brighter greenish tone
+                    this.colorB = map(spectrum[15], 0, 255, 150, 255);  // Deeper blue
 
-                // Adding depth effect using noise and frequency values
-                let depthFactor = map(noise(this.noiseOffsetY * 0.5), 0, 1, 100, 200); // Depth effect
-                this.colorR = constrain(this.colorR + depthFactor, 0, 255); // Adjust for depth
-                this.colorG = constrain(this.colorG + depthFactor / 2, 0, 255);
-                this.colorB = constrain(this.colorB - depthFactor / 3, 0, 255);
+                    // Adding depth effect using noise and frequency values
+                    let depthFactor = map(noise(this.noiseOffsetY * 0.5), 0, 1, 100, 200); // Depth effect
+                    this.colorR = constrain(this.colorR + depthFactor, 0, 255); // Adjust for depth
+                    this.colorG = constrain(this.colorG + depthFactor / 2, 0, 255);
+                    this.colorB = constrain(this.colorB - depthFactor / 3, 0, 255);
 
-                // Smooth alpha to create the dynamic lighting effect on the water
-                let smoothAlpha = map(noise(this.noiseOffsetY * 0.5), 0, 1, 120, 255);
-                this.color = color(this.colorR, this.colorG, this.colorB, smoothAlpha);
+                    // Smooth alpha to create the dynamic lighting effect on the water
+                    let smoothAlpha = map(noise(this.noiseOffsetY * 0.5), 0, 1, 120, 255);
+                    this.color = color(this.colorR, this.colorG, this.colorB, smoothAlpha);
+                }
+                // Spectrum to alpha
+                let freqIndex = map(this.y, 0, height + 50, 0, spectrum.length - 1);
+                let alphaValue = map(spectrum[int(freqIndex)], 0, 255, 80, 255);
+                this.a = alphaValue;
             }
         }
     }
@@ -229,7 +249,7 @@ class Rect {
         }
 
         // For the sea part, use an irregular polygon to simulate waves
-        if (isAudioPlaying && this.part === "sky") {
+        if (isAudioPlaying && this.part === "sky" && isHaveHighFreq && isSkyRandom) {
             rotate(random(360));
             beginShape();
             let numVertices = int(random(5, 7));
